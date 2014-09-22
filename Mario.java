@@ -1,5 +1,5 @@
 import java.util.*;
-import java.io.*;
+import marioOuput.*;
 
 public class Mario
 {
@@ -7,17 +7,17 @@ public class Mario
     static int MINIMUM_NUMBER_OF_BLOCKS = 2;
     static char SPACE = ' ';
     static char BRICK = '#';
-    static String FILENAME = "mario.txt";
-    
-    private File outputFile;
 
+    private Scanner userInputScanner;
+    
     public Mario(){};
     
     public void assemblePyramid()
     {
        int pyramidHeight = promptUserForHeight();
-       char pyramidOutput = promptUserForOutputType();
+       PyramidOutput pyramidOutput = promptUserForOutputType(pyramidHeight);
        printAllPyramidRows(pyramidHeight, pyramidOutput);
+       
        System.out.println("Pyramid has been printed.");
     }
     
@@ -27,10 +27,10 @@ public class Mario
         do
        {
            System.out.print("Height: ");
-           Scanner userInput = new Scanner(System.in);
+           openUserInputScanner();
            try
            {
-               numberOfPyramidRows = userInput.nextInt();
+               numberOfPyramidRows = userInputScanner.nextInt();
            }
            catch(InputMismatchException e)
            {
@@ -40,42 +40,41 @@ public class Mario
        return numberOfPyramidRows;
     }
     
-    private char promptUserForOutputType()
+    private PyramidOutput promptUserForOutputType(int height)
     {
-        char selectedOutput;
+    	PyramidOutput selectedOutput = null;
+    	char userSelection;
         do
         {
             System.out.print("Output (c for Console or f for File): ");
-            Scanner userInput = new Scanner(System.in);
-            selectedOutput = userInput.next().charAt(0);
-        } while(selectedOutput != 'c' && selectedOutput != 'f');
+            userSelection = userInputScanner.next().charAt(0);
+            switch(userSelection)
+            {
+            case 'c':
+            	selectedOutput = new PyramidConsole();
+            	break;
+            case 'f':
+            	selectedOutput = new PyramidTextFile(height);
+            	break;
+            }
+        } while(userSelection != 'c' && userSelection != 'f');
+        closeUserInputScanner();
         return selectedOutput;
     }
     
-    private void printAllPyramidRows(int height, char outputType)
-    {
-       if(outputType == 'f')
-       {
-           prepareOuputFile();
-       }
-       
-       for(int numberOfSpaces = height + 1 - MINIMUM_NUMBER_OF_BLOCKS, numberOfBlocks = MINIMUM_NUMBER_OF_BLOCKS; numberOfBlocks <= height + 1;  numberOfSpaces--, numberOfBlocks++)
+    private void printAllPyramidRows(int height, PyramidOutput outputType)
+    {       
+
+       outputType.prepareOutputDestination();
+
+       for(int numberOfSpaces = height + 1 - MINIMUM_NUMBER_OF_BLOCKS, numberOfBricks = MINIMUM_NUMBER_OF_BLOCKS; numberOfBricks <= height + 1;  numberOfSpaces--, numberOfBricks++)
        {
            StringBuilder pyramidRow = new StringBuilder();
            pyramidRow.append(addBlockToPyramidRow(numberOfSpaces, SPACE));
-           pyramidRow.append(addBlockToPyramidRow(numberOfBlocks, BRICK));
-           printPyramidRow(outputType, pyramidRow.toString());
+           pyramidRow.append(addBlockToPyramidRow(numberOfBricks, BRICK));
+           outputType.setPyramidRow(pyramidRow.toString());
+           outputType.printPyramidRow();
        }
-    }
-    
-    private void prepareOuputFile()
-    {
-        File currentOutputFile = new File(FILENAME);
-        if(currentOutputFile.exists())
-        {
-            currentOutputFile.delete();          
-        }
-        outputFile = new File(FILENAME);
     }
     
     private String addBlockToPyramidRow(int countOfBlocks, char block)
@@ -88,32 +87,13 @@ public class Mario
         return sb.toString();
     }
     
-    private void printPyramidRow(char outputType, String pyramidRow)
+    private void openUserInputScanner()
     {
-        switch(outputType)
-           {
-               case 'c':
-                    System.out.println(pyramidRow);
-                    break;
-               case 'f':
-                    printToOuputFile(pyramidRow);
-                    break;
-           }
+    	userInputScanner = new Scanner(System.in);
     }
-        
-    private void printToOuputFile(String row) 
+    
+    private void closeUserInputScanner()
     {
-        try
-        {
-            FileWriter fileWriter = new FileWriter(outputFile, true);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.println(row);
-            fileWriter.close();
-        }
-        catch(IOException e)
-        {
-            String fileWriterException = e.toString();
-            System.out.println(fileWriterException);
-        }  
+    	userInputScanner.close();
     }
 }
