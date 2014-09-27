@@ -1,6 +1,5 @@
-package marioOuput;
+package marioOutput;
 
-import marioOuput.*;
 import java.io.*;
 
 public class PyramidTextFile implements PyramidOutput {
@@ -12,35 +11,32 @@ public class PyramidTextFile implements PyramidOutput {
 	static String FILENAME = "mario.txt";
 	
 	private File outputFile;
-	private int height;
 	private String pyramidRow;
 	
-	public PyramidTextFile(int height){
-		this.height = height;		
-	};
-	
-	public void setPyramidRow(String pyramidRow)
+	public PyramidTextFile(String pyramidRow)
 	{
 		this.pyramidRow = pyramidRow;
-	}
-				
-	public void printPyramidRow()
-	{
-		try
-        {
-            FileWriter fileWriter = new FileWriter(this.outputFile, true);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.println(this.pyramidRow);
-            fileWriter.close();
-        }
-        catch(IOException e)
-        {
-            String fileWriterException = e.toString();
-            System.out.println(fileWriterException);
-        }  
+	};
+
+	public void printPyramidRow(String pyramidRow)
+	{		
+		this.pyramidRow = pyramidRow;
+		this.outputFile = new File(FILENAME);
+		if(isFirstRow())
+		{
+			prepareOutputDestination();
+		}
+		printToOutputDestination();
 	}
 
-	public void prepareOutputDestination()
+	private boolean isFirstRow()
+	{
+		String firstRow = " ##";
+		int rowLength = this.pyramidRow.length();
+		return this.pyramidRow.substring(rowLength - 3, rowLength).equals(firstRow);
+	}
+	
+	private void prepareOutputDestination()
     {
         File currentOutputFile = new File(FILENAME);
         if(currentOutputFile.exists())
@@ -49,4 +45,34 @@ public class PyramidTextFile implements PyramidOutput {
         }
         this.outputFile = new File(FILENAME);
     }
+	
+	private void printToOutputDestination()
+	{
+		try(FileWriter fileWriter = new FileWriter(this.outputFile, true))
+        {
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.println(toString());
+            printWriter.close();
+        }
+        catch(IOException e)
+        {
+            String fileWriterException = e.toString();
+            System.out.println(fileWriterException);
+        } 	
+	}
+	
+	@Override
+	public java.lang.String toString()
+	{
+		String proposedPyramidRow = this.pyramidRow.toString();
+		for(int i = 0, strLength = proposedPyramidRow.length(); i < strLength; i++)
+		{
+			char proposedPyramidBlock = proposedPyramidRow.charAt(i);
+			if(proposedPyramidBlock != ' ' && proposedPyramidBlock != '#')
+			{
+				proposedPyramidRow.replace(proposedPyramidBlock, '#');
+			}
+		}
+		return this.pyramidRow;
+	}
 }
