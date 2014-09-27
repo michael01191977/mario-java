@@ -1,26 +1,20 @@
-package marioOuput;
+package marioOutput;
 
 public class PyramidPrinter {
 	
 	static int MINIMUM_NUMBER_OF_BLOCKS = 2;
     static char SPACE = ' ';
     static char BRICK = '#';
-	
-	private int height;
-	
-	public PyramidPrinter(int height)
-	{
-		this.height = height;
-	}
-	
+    
+    private StringBuilder pyramidRow;
 
-	
 	public String createPyramidRow(int numberOfSpaces, int numberOfBlocks)
     {       
-    	StringBuilder pyramidRow = new StringBuilder();
+    	pyramidRow = new StringBuilder();
         pyramidRow.append(addBlockToPyramidRow(numberOfSpaces, SPACE));
         pyramidRow.append(addBlockToPyramidRow(numberOfBlocks, BRICK));
-        return pyramidRow.toString();
+        return toString();
+        
     }
     
     private String addBlockToPyramidRow(int countOfBlocks, char block)
@@ -32,4 +26,9 @@ public class PyramidPrinter {
         }
         return sb.toString();
     }	
+    
+    public java.lang.String toString()
+    {	
+    	return "1" + pyramidRow.toString();
+    }
 }
