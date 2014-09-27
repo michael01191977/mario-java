@@ -1,5 +1,6 @@
 import java.util.*;
-import marioOuput.*;
+
+import marioOutput.*;
 
 public class Mario
 {
@@ -16,8 +17,8 @@ public class Mario
     {
        int pyramidHeight = promptUserForHeight();
        PyramidOutput pyramidOutput = promptUserForOutputType(pyramidHeight);
-       printAllPyramidRows(pyramidHeight, pyramidOutput);
-       
+       Pyramid pyramid = new Pyramid(pyramidHeight, pyramidOutput);
+       pyramid.printAllPyramidRows();
        System.out.println("Pyramid has been printed.");
     }
     
@@ -51,40 +52,15 @@ public class Mario
             switch(userSelection)
             {
             case 'c':
-            	selectedOutput = new PyramidConsole();
+            	selectedOutput = PyramidOutputFactory.consoleOutput();
             	break;
             case 'f':
-            	selectedOutput = new PyramidTextFile(height);
+            	selectedOutput = PyramidOutputFactory.textFileOutput();
             	break;
             }
         } while(userSelection != 'c' && userSelection != 'f');
         closeUserInputScanner();
         return selectedOutput;
-    }
-    
-    private void printAllPyramidRows(int height, PyramidOutput outputType)
-    {       
-
-       outputType.prepareOutputDestination();
-
-       for(int numberOfSpaces = height + 1 - MINIMUM_NUMBER_OF_BLOCKS, numberOfBricks = MINIMUM_NUMBER_OF_BLOCKS; numberOfBricks <= height + 1;  numberOfSpaces--, numberOfBricks++)
-       {
-           StringBuilder pyramidRow = new StringBuilder();
-           pyramidRow.append(addBlockToPyramidRow(numberOfSpaces, SPACE));
-           pyramidRow.append(addBlockToPyramidRow(numberOfBricks, BRICK));
-           outputType.setPyramidRow(pyramidRow.toString());
-           outputType.printPyramidRow();
-       }
-    }
-    
-    private String addBlockToPyramidRow(int countOfBlocks, char block)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < countOfBlocks; i++)
-        {
-            sb.append(block);
-        }
-        return sb.toString();
     }
     
     private void openUserInputScanner()
