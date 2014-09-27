@@ -1,27 +1,33 @@
-package marioOuput;
+package marioOutput;
 
-import marioOuput.PyramidOutput;
+
 public class PyramidConsole implements PyramidOutput{
 	
 	private String pyramidRow;
 	
-	public PyramidConsole(){};
-	
-	public void setPyramidRow(String pyramidRow)
+	public PyramidConsole(String pyramidRow)
 	{
 		this.pyramidRow = pyramidRow;
+	};
+	
+	public void printPyramidRow(String pyramidRow)
+	{
+		this.pyramidRow = pyramidRow;
+		System.out.println(toString());
 	}
 	
-	public void printPyramidRow()
+	@Override
+	public java.lang.String toString()
 	{
-		System.out.println(this.pyramidRow);
+		String proposedPyramidRow = this.pyramidRow.toString();
+		for(int i = 0, strLength = proposedPyramidRow.length(); i < strLength; i++)
+		{
+			char proposedPyramidBlock = proposedPyramidRow.charAt(i);
+			if(proposedPyramidBlock != ' ' && proposedPyramidBlock != '#')
+			{
+				proposedPyramidRow.replace(proposedPyramidBlock, '#');
+			}
+		}
+		return this.pyramidRow;
 	}
-
-
-	public void prepareOutputDestination()
-	{	
-		
-	}
-
-
 }
