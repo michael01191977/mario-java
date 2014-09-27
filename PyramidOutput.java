@@ -1,8 +1,6 @@
-package marioOuput;
+package marioOutput;
 
 public interface PyramidOutput {
-
-	public void setPyramidRow(String pyramidRow);
-	public void prepareOutputDestination();
-	public void printPyramidRow();
+	
+	public void printPyramidRow(String pyramidRow);
 }
